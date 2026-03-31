@@ -1,2 +1,35 @@
-# focusFinder
-Focus Finder is a web application designed for Jackson State University that helps students discover the best study locations on campus using real-time data, AI-powered noise detection, and student input.
+# Focus Finder
+
+Focus Finder is a web application for **Jackson State University** students to discover study-friendly spots on campus. It combines **live-style busyness and noise indicators** (demo simulation, ready to swap for real feeds), **on-device microphone analysis** for a focus suitability score, and **student reviews** stored via the API.
+
+## Stack
+
+- [Next.js](https://nextjs.org/) (App Router) + TypeScript
+- [Tailwind CSS](https://tailwindcss.com/) v4
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Project layout
+
+| Area | Purpose |
+|------|---------|
+| `app/locations` | Study spots list with polling live metrics |
+| `app/locations/[id]` | Detail, reviews, submit feedback |
+| `app/noise` | Browser-based noise / stability analysis |
+| `app/contribute` | Global feedback form |
+| `app/api/locations/status` | JSON metrics (replace with campus data) |
+| `app/api/reviews` | GET/POST reviews → `data/reviews.json` |
+| `lib/locations.ts` | Seed locations (edit for real campus POIs) |
+
+## Production notes
+
+- Persist reviews in a database instead of `data/reviews.json` for multi-instance hosting.
+- Replace simulated metrics in `lib/liveMetrics.ts` with Wi‑Fi density, room bookings, or sensor APIs.
+- Optional: add a trained audio classifier (e.g. TensorFlow.js) while keeping processing on-device for privacy.

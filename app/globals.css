@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --jsu-navy: #002147;
+  --jsu-blue: #0a3d6b;
+  --jsu-gold: #c5a028;
+  --jsu-cream: #f7f4ec;
+  --surface: #ffffff;
+  --muted: #5c6570;
+}
+
+@theme inline {
+  --color-jsu-navy: var(--jsu-navy);
+  --color-jsu-blue: var(--jsu-blue);
+  --color-jsu-gold: var(--jsu-gold);
+  --color-jsu-cream: var(--jsu-cream);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: linear-gradient(165deg, var(--jsu-cream) 0%, #e8e4d8 45%, #dfe8f0 100%);
+  color: var(--jsu-navy);
+  min-height: 100vh;
+}
