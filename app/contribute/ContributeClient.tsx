@@ -25,7 +25,10 @@ export function ContributeClient() {
   }, [presetId]);
 
   const loadRecent = useCallback(async () => {
-    const res = await fetch("/api/reviews", { cache: "no-store" });
+    const res = await fetch("/api/reviews", {
+      cache: "no-store",
+      credentials: "same-origin",
+    });
     const data = (await res.json()) as { reviews: Review[] };
     setRecent((data.reviews ?? []).slice(0, 8));
   }, []);
@@ -46,6 +49,7 @@ export function ContributeClient() {
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify({ locationId, rating, noiseReported, comment }),
       });
       if (!res.ok) {

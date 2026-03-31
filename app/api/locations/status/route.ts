@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { studyLocations } from "@/lib/locations";
 import { computeLiveMetrics } from "@/lib/liveMetrics";
-import { requireSession } from "@/lib/requireSession";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const { response } = await requireSession();
-  if (response) return response;
+export const GET = auth(async function GET(req) {
+  if (!req.auth?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const tick = Math.floor(Date.now() / 5000);
   const metrics = computeLiveMetrics(studyLocations, tick);
   return NextResponse.json({ metrics, tick });
-}
+});

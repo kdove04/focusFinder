@@ -24,7 +24,7 @@ export function LocationDetail({ location }: Props) {
     try {
       const res = await fetch(
         `/api/reviews?locationId=${encodeURIComponent(location.id)}`,
-        { cache: "no-store" },
+        { cache: "no-store", credentials: "same-origin" },
       );
       const data = (await res.json()) as { reviews: Review[] };
       setReviews(data.reviews ?? []);
@@ -35,7 +35,10 @@ export function LocationDetail({ location }: Props) {
 
   const loadMetric = useCallback(async () => {
     try {
-      const res = await fetch("/api/locations/status", { cache: "no-store" });
+      const res = await fetch("/api/locations/status", {
+        cache: "no-store",
+        credentials: "same-origin",
+      });
       const data = (await res.json()) as { metrics: LiveMetric[] };
       const m = data.metrics?.find((x) => x.locationId === location.id);
       setMetric(m ?? null);
@@ -66,6 +69,7 @@ export function LocationDetail({ location }: Props) {
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify({
           locationId: location.id,
           rating,

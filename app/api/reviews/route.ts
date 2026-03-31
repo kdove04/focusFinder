@@ -1,27 +1,29 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/requireSession";
+import { auth } from "@/auth";
 import { toPublicReview } from "@/lib/publicReview";
 import { appendReview, readReviews } from "@/lib/reviews";
 
-export async function GET(request: Request) {
-  const { response } = await requireSession();
-  if (response) return response;
+export const GET = auth(async function GET(req) {
+  if (!req.auth?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const { searchParams } = new URL(request.url);
+  const { searchParams } = new URL(req.url);
   const locationId = searchParams.get("locationId");
   let list = await readReviews();
   if (locationId) {
     list = list.filter((r) => r.locationId === locationId);
   }
   return NextResponse.json({ reviews: list.map(toPublicReview) });
-}
+});
 
-export async function POST(request: Request) {
-  const { session, response } = await requireSession();
-  if (response) return response;
+export const POST = auth(async function POST(req) {
+  if (!req.auth?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
-    const body = (await request.json()) as {
+    const body = (await req.json()) as {
       locationId?: string;
       rating?: number;
       noiseReported?: string;
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
         ? noiseReported
         : "moderate";
     const email =
-      typeof session.user?.email === "string" ? session.user.email : undefined;
+      typeof req.auth.user.email === "string" ? req.auth.user.email : undefined;
     const review = await appendReview({
       locationId,
       rating,
@@ -54,4 +56,4 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-}
+});
