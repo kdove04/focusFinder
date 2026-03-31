@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { auth } from "@/auth";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+
   return (
     <div className="space-y-14">
       <section className="rounded-3xl border border-jsu-navy/10 bg-gradient-to-br from-white via-white to-jsu-cream/50 px-6 py-12 shadow-sm sm:px-10 sm:py-16">
@@ -11,22 +14,40 @@ export default function HomePage() {
           Find your next deep-work spot on campus
         </h1>
         <p className="mt-4 max-w-xl text-lg text-jsu-navy/80">
-          Focus Finder combines live busyness and noise signals with student feedback so you can
-          pick a study location that matches how you work today.
+          Focus Finder combines live busyness and noise signals with student feedback so you can pick
+          a study location that matches how you work today.
         </p>
+        {!session && (
+          <p className="mt-4 max-w-xl rounded-lg border border-jsu-navy/10 bg-white/80 px-4 py-3 text-sm text-jsu-navy/90">
+            Sign in with your <strong>JSU Microsoft 365</strong> account (
+            <span className="whitespace-nowrap">JNumber@students.jsums.edu</span>) to browse spots,
+            run the noise check, and share feedback.
+          </p>
+        )}
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/locations"
-            className="rounded-xl bg-jsu-navy px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-jsu-blue"
-          >
-            Browse study locations
-          </Link>
-          <Link
-            href="/noise"
-            className="rounded-xl border border-jsu-navy/20 bg-white px-6 py-3 text-sm font-semibold text-jsu-navy transition hover:bg-jsu-cream"
-          >
-            Check noise where you are
-          </Link>
+          {session ? (
+            <>
+              <Link
+                href="/locations"
+                className="rounded-xl bg-jsu-navy px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-jsu-blue"
+              >
+                Browse study locations
+              </Link>
+              <Link
+                href="/noise"
+                className="rounded-xl border border-jsu-navy/20 bg-white px-6 py-3 text-sm font-semibold text-jsu-navy transition hover:bg-jsu-cream"
+              >
+                Check noise where you are
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-xl bg-jsu-navy px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-jsu-blue"
+            >
+              Sign in with JSU
+            </Link>
+          )}
         </div>
       </section>
 

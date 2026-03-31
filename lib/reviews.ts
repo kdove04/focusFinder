@@ -8,6 +8,8 @@ export type Review = {
   noiseReported: "quiet" | "moderate" | "loud";
   comment: string;
   createdAt: string;
+  /** Set server-side from session; omitted from API responses */
+  submittedByEmail?: string;
 };
 
 const reviewsPath = path.join(process.cwd(), "data", "reviews.json");
@@ -22,7 +24,9 @@ export async function readReviews(): Promise<Review[]> {
   }
 }
 
-export async function appendReview(review: Omit<Review, "id" | "createdAt">): Promise<Review> {
+export async function appendReview(
+  review: Omit<Review, "id" | "createdAt">,
+): Promise<Review> {
   const reviews = await readReviews();
   const full: Review = {
     ...review,
