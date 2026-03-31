@@ -16,8 +16,20 @@ function isAllowedEmail(email: string | null | undefined): boolean {
   return domains.some((d) => e.endsWith(`@${d}`));
 }
 
+/**
+ * Auth.js requires a secret to sign cookies/JWTs. Without it, every `auth()` call throws
+ * (runtime error on all pages). Production must set AUTH_SECRET; local dev uses a fixed
+ * fallback so the app runs before `.env.local` is filled in.
+ */
+function resolveAuthSecret(): string | undefined {
+  if (process.env.AUTH_SECRET) return process.env.AUTH_SECRET;
+  if (process.env.NODE_ENV === "production") return undefined;
+  return "focus-finder-dev-only-not-for-production";
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  secret: resolveAuthSecret(),
   providers: [
     MicrosoftEntraID({
       clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,

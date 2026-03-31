@@ -30,7 +30,7 @@ Open [http://localhost:3000](http://localhost:3000).
 3. Create a **client secret** under **Certificates & secrets**.
 4. Set **Application (client) ID**, secret, and issuer in `.env.local`:
    - `AUTH_MICROSOFT_ENTRA_ID_ISSUER` is typically `https://login.microsoftonline.com/<Directory (tenant) ID>/v2.0`
-5. Set `AUTH_SECRET` to a long random string (for example `openssl rand -base64 32`).
+5. Set `AUTH_SECRET` to a long random string (for example `openssl rand -base64 32`). **Production will not start without it.** Local development uses a temporary built-in secret until you add `AUTH_SECRET` to `.env.local` (you should still set your own for consistent sessions across restarts).
 
 Only email addresses whose domain is allowed can complete sign-in. By default that is **`students.jsums.edu`**. To allow additional domains (for example staff), set `ALLOWED_EMAIL_DOMAINS` to a comma-separated list.
 
