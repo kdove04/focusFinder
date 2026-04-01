@@ -36,6 +36,13 @@ Only email addresses whose domain is allowed can complete sign-in. By default th
 
 Ensure the Entra app requests **sign-in and read user profile** so Auth.js receives `email` and `name`. If the email claim is missing, adjust **Token configuration** → optional claims in Entra or the app’s API permissions per [Microsoft’s OAuth documentation](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow).
 
+### Sign-in fails after Duo or “Microsoft has trouble signing you in”
+
+- **UPN without `email` claim:** The app allows `@students.jsums.edu` using `email`, `preferred_username`, or `upn` from the token. If IT has not added the `email` optional claim, sign-in should still work; if it does not, ask IT to add the `email` claim for the app registration.
+- **Long MFA flows:** OAuth `state` / PKCE cookies are set to **30 minutes** so slow Duo prompts are less likely to expire the login attempt.
+- **Redirect URI:** Must exactly match Entra (including `http://localhost:3000` vs another port, `https` in production, and path `/api/auth/callback/microsoft-entra-id`).
+- **`AUTH_URL`:** In production, set `AUTH_URL` (or `NEXTAUTH_URL`) to the public origin of this app so the OAuth callback matches what Entra expects.
+
 ## Project layout
 
 | Area | Purpose |
