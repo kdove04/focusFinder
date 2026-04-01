@@ -1,11 +1,31 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import { LocationCard } from "@/components/LocationCard";
 import { useLiveMetrics } from "@/components/LiveMetricsProvider";
-import { studyLocations } from "@/lib/locations";
+import type { StudyLocation } from "@/lib/locations";
 
 export default function LocationsPage() {
   const { byId, lastError, refresh } = useLiveMetrics();
+  const [locations, setLocations] = useState<StudyLocation[]>([]);
+  const [locationsLoading, setLocationsLoading] = useState(true);
+
+  const loadLocations = useCallback(async () => {
+    setLocationsLoading(true);
+    try {
+      const res = await fetch("/api/locations", { cache: "no-store" });
+      const data = (await res.json()) as { locations?: StudyLocation[] };
+      setLocations(data.locations ?? []);
+    } catch {
+      setLocations([]);
+    } finally {
+      setLocationsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadLocations();
+  }, [loadLocations]);
 
   return (
     <div className="space-y-8">
@@ -13,7 +33,11 @@ export default function LocationsPage() {
         <h1 className="text-3xl font-bold text-jsu-navy">Study locations</h1>
         <p className="mt-2 max-w-2xl text-muted">
           Cards refresh every few seconds with demo live metrics. Sort by what matters to you—quieter
-          floors score higher on Focus.
+          floors score higher on Focus. Spots students add from{" "}
+          <a href="/contribute" className="font-medium text-jsu-blue hover:underline">
+            Share feedback
+          </a>{" "}
+          show up here too.
         </p>
         {lastError && (
           <p className="mt-3 text-sm text-amber-800">
@@ -28,19 +52,25 @@ export default function LocationsPage() {
           </p>
         )}
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
-        {[...studyLocations]
-          .sort((a, b) => {
-            const ma = byId[a.id];
-            const mb = byId[b.id];
-            const na = ma?.noiseLevel ?? a.baselineNoise;
-            const nb = mb?.noiseLevel ?? b.baselineNoise;
-            return na - nb;
-          })
-          .map((loc) => (
-            <LocationCard key={loc.id} location={loc} metric={byId[loc.id]} />
-          ))}
-      </div>
+      {locationsLoading ? (
+        <p className="text-sm text-muted">Loading locations…</p>
+      ) : locations.length === 0 ? (
+        <p className="text-sm text-muted">No locations loaded.</p>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2">
+          {[...locations]
+            .sort((a, b) => {
+              const ma = byId[a.id];
+              const mb = byId[b.id];
+              const na = ma?.noiseLevel ?? a.baselineNoise;
+              const nb = mb?.noiseLevel ?? b.baselineNoise;
+              return na - nb;
+            })
+            .map((loc) => (
+              <LocationCard key={loc.id} location={loc} metric={byId[loc.id]} />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

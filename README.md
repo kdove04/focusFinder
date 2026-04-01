@@ -26,12 +26,14 @@ Open [http://localhost:3000](http://localhost:3000).
 | `app/locations/[id]` | Detail, reviews, submit feedback |
 | `app/noise` | Browser-based noise / stability analysis |
 | `app/contribute` | Global feedback form |
+| `app/api/locations` | GET merged list; POST adds a spot → `data/custom-locations.json` |
 | `app/api/locations/status` | JSON metrics (replace with campus data) |
 | `app/api/reviews` | GET/POST reviews → `data/reviews.json` |
+| `data/custom-locations.json` | Student-added study spots (seed `[]`) |
 | `lib/locations.ts` | Seed locations (edit for real campus POIs) |
 
 ## Production notes
 
-- Persist reviews in a database instead of `data/reviews.json` for multi-instance hosting.
+- Persist reviews and custom locations in a database instead of `data/reviews.json` / `data/custom-locations.json` for multi-instance hosting.
 - Replace simulated metrics in `lib/liveMetrics.ts` with Wi‑Fi density, room bookings, or sensor APIs.
 - Optional: add a trained audio classifier (e.g. TensorFlow.js) while keeping processing on-device for privacy.
