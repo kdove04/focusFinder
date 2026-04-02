@@ -1,9 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { LocationCard } from "@/components/LocationCard";
 import { useLiveMetrics } from "@/components/LiveMetricsProvider";
 import type { StudyLocation } from "@/lib/locations";
+
+const LocationsMap = dynamic(
+  () => import("@/components/LocationsMap").then((m) => ({ default: m.LocationsMap })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[min(420px,55vh)] items-center justify-center rounded-2xl border border-jsu-navy/10 bg-white/80 text-sm text-muted">
+        Loading campus map…
+      </div>
+    ),
+  },
+);
 
 export default function LocationsPage() {
   const { byId, lastError, refresh } = useLiveMetrics();
@@ -57,7 +70,20 @@ export default function LocationsPage() {
       ) : locations.length === 0 ? (
         <p className="text-sm text-muted">No locations loaded.</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2">
+        <>
+          <section aria-labelledby="campus-map-heading" className="space-y-3">
+            <div>
+              <h2 id="campus-map-heading" className="text-lg font-semibold text-jsu-navy">
+                Campus map
+              </h2>
+              <p className="mt-1 max-w-2xl text-sm text-muted">
+                Pins group study spots by building (approximate locations). Open a pin to jump to a
+                location page.
+              </p>
+            </div>
+            <LocationsMap locations={locations} />
+          </section>
+          <div className="grid gap-6 md:grid-cols-2">
           {[...locations]
             .sort((a, b) => {
               const ma = byId[a.id];
@@ -69,7 +95,8 @@ export default function LocationsPage() {
             .map((loc) => (
               <LocationCard key={loc.id} location={loc} metric={byId[loc.id]} />
             ))}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );
