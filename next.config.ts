@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "www.jsums.edu",
         pathname: "/wp-content/uploads/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.jsums.edu",
+        pathname: "/studentlifeoperations/files/**",
+      },
     ],
   },
 };
