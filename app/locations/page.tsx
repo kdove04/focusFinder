@@ -65,25 +65,24 @@ export default function LocationsPage() {
           </p>
         )}
       </div>
+      <section aria-labelledby="campus-map-heading" className="space-y-3">
+        <div>
+          <h2 id="campus-map-heading" className="text-lg font-semibold text-jsu-navy">
+            Campus map
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted">
+            OpenStreetMap view centered on the main JSU campus. Pan and zoom to orient yourself
+            alongside the location list below.
+          </p>
+        </div>
+        <LocationsMap />
+      </section>
       {locationsLoading ? (
         <p className="text-sm text-muted">Loading locations…</p>
       ) : locations.length === 0 ? (
         <p className="text-sm text-muted">No locations loaded.</p>
       ) : (
-        <>
-          <section aria-labelledby="campus-map-heading" className="space-y-3">
-            <div>
-              <h2 id="campus-map-heading" className="text-lg font-semibold text-jsu-navy">
-                Campus map
-              </h2>
-              <p className="mt-1 max-w-2xl text-sm text-muted">
-                Pins group study spots by building (approximate locations). Open a pin to jump to a
-                location page.
-              </p>
-            </div>
-            <LocationsMap locations={locations} />
-          </section>
-          <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {[...locations]
             .sort((a, b) => {
               const ma = byId[a.id];
@@ -95,8 +94,7 @@ export default function LocationsPage() {
             .map((loc) => (
               <LocationCard key={loc.id} location={loc} metric={byId[loc.id]} />
             ))}
-          </div>
-        </>
+        </div>
       )}
     </div>
   );
