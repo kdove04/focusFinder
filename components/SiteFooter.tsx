@@ -9,7 +9,7 @@ export function SiteFooter() {
         reservations data when available.
       </p>
       <p className="mx-auto mt-4 max-w-3xl px-4 leading-relaxed">
-        Campus photos:{" "}
+        Campus photos: Gibbs-Green plaza—{" "}
         <span className="text-jsu-navy/80">2C2K Photography</span> (
         <Link
           href="https://creativecommons.org/licenses/by/2.0/"
@@ -17,19 +17,16 @@ export function SiteFooter() {
         >
           CC BY 2.0
         </Link>
-        ) and <span className="text-jsu-navy/80">Comingdeer</span> (
-        <Link
-          href="https://creativecommons.org/licenses/by-sa/4.0/"
-          className="text-jsu-blue underline hover:no-underline"
-        >
-          CC BY-SA 4.0
-        </Link>
         ) via{" "}
         <Link
           href="https://commons.wikimedia.org/wiki/Category:Jackson_State_University"
           className="text-jsu-blue underline hover:no-underline"
         >
           Wikimedia Commons
+        </Link>
+        . H.T. Sampson Library and JSU Student Center images from{" "}
+        <Link href="https://www.jsums.edu/" className="text-jsu-blue underline hover:no-underline">
+          Jackson State University
         </Link>
         . University wordmark:{" "}
         <Link href={jsuLogo.commonsUrl} className="text-jsu-blue underline hover:no-underline">

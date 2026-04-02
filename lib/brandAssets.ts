@@ -1,7 +1,7 @@
 /**
- * Remote imagery from Wikimedia Commons. Footer and UI credit the authors and licenses.
- * Official JSU trademark use may require approval from University Communications
- * (see https://www.jsums.edu/universitycommunications/application-for-logo-usage/).
+ * Remote imagery: Gibbs-Green hero from Wikimedia Commons; gallery includes official jsums.edu
+ * photos. Footer and UI credit sources. Official JSU trademark use may require approval from
+ * University Communications (see https://www.jsums.edu/universitycommunications/application-for-logo-usage/).
  */
 
 export const jsuLogo = {
@@ -32,19 +32,19 @@ export const campusPhotos: CampusPhoto[] = [
     licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Rose_Embly_McCoy_Auditorium_%40_JSU.jpg/1280px-Rose_Embly_McCoy_Auditorium_%40_JSU.jpg",
-    alt: "Rose Embly McCoy Auditorium at Jackson State University",
-    caption: "Rose Embly McCoy Auditorium",
-    credit: "2C2K Photography",
-    license: "CC BY 2.0",
-    licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
+    src: "https://www.jsums.edu/wp-content/uploads/2024/01/Library-1.jpg",
+    alt: "H.T. Sampson Library at Jackson State University",
+    caption: "H.T. Sampson Library",
+    credit: "Jackson State University",
+    license: "jsums.edu",
+    licenseUrl: "https://www.jsums.edu/",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/JSUdowntown.JPG/1280px-JSUdowntown.JPG",
-    alt: "Jackson State University downtown office tower on Capitol Street",
-    caption: "Downtown Jackson — JSU Institute of Government",
-    credit: "Comingdeer",
-    license: "CC BY-SA 4.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    src: "https://www.jsums.edu/wp-content/uploads/2013/07/JSUWelcomeCenterBAnner.jpg",
+    alt: "JSU Student Center and Welcome Center building at Jackson State University",
+    caption: "JSU Student Center",
+    credit: "Jackson State University",
+    license: "jsums.edu",
+    licenseUrl: "https://www.jsums.edu/",
   },
 ];

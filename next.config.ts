@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "upload.wikimedia.org",
         pathname: "/wikipedia/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.jsums.edu",
+        pathname: "/wp-content/uploads/**",
+      },
     ],
   },
 };
