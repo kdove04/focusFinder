@@ -40,7 +40,7 @@ export const campusPhotos: CampusPhoto[] = [
     licenseUrl: "https://www.jsums.edu/",
   },
   {
-    src: "https://www.jsums.edu/wp-content/uploads/2013/07/JSUWelcomeCenterBAnner.jpg",
+    src: "https://www.jsums.edu/studentlifeoperations/files/2023/06/SC-New-View-2-1240x600-1.jpg",
     alt: "JSU Student Center and Welcome Center building at Jackson State University",
     caption: "JSU Student Center",
     credit: "Jackson State University",
