@@ -4,6 +4,8 @@ Focus Finder is a web application for **Jackson State University** students to d
 
 The default app is **open to everyone** (no sign-in). Add authentication later if you need verified JSU accounts or moderation.
 
+**Imagery:** The header wordmark and home page photos load from [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Jackson_State_University) (`lib/brandAssets.ts`). The site footer credits photographers and licenses. For **official** JSU marks and campaigns, follow [University Communications](https://www.jsums.edu/universitycommunications/) guidance and replace remote URLs with approved files in `public/` if required.
+
 ## Stack
 
 - [Next.js](https://nextjs.org/) (App Router) + TypeScript

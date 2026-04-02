@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { jsuLogo } from "@/lib/brandAssets";
 
 const nav = [
   { href: "/locations", label: "Study spots" },
@@ -10,16 +12,19 @@ export function Header() {
   return (
     <header className="border-b border-jsu-navy/10 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link href="/" className="group flex items-center gap-2">
-          <span
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-jsu-navy text-sm font-bold text-jsu-gold shadow-sm transition group-hover:bg-jsu-blue"
-            aria-hidden
-          >
-            FF
-          </span>
-          <div className="leading-tight">
+        <Link href="/" className="group flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+          <Image
+            src={jsuLogo.src}
+            alt={jsuLogo.alt}
+            width={jsuLogo.width}
+            height={jsuLogo.height}
+            className="h-9 w-auto shrink-0 object-contain object-left sm:h-10"
+            priority
+            sizes="(max-width: 640px) 200px, 240px"
+          />
+          <div className="min-w-0 leading-tight">
             <span className="block font-semibold text-jsu-navy">Focus Finder</span>
-            <span className="text-xs text-muted">Jackson State University</span>
+            <span className="text-xs text-muted">Study spaces on campus</span>
           </div>
         </Link>
         <nav className="flex flex-wrap gap-1 sm:gap-2" aria-label="Main">
