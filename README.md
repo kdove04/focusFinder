@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `app/api/locations/status` | JSON metrics (replace with campus data) |
 | `app/api/reviews` | GET/POST reviews → `data/reviews.json` |
 | `data/custom-locations.json` | Student-added study spots (seed `[]`) |
-| `lib/locations.ts` | Seed locations (edit for real campus POIs) |
+| `lib/locations.ts` | Default study spots named from the [JSU campus map / directory](https://www.jsums.edu/campusmap) (plus custom JSON) |
 
 ## Production notes
 
