@@ -1,29 +1,20 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { toPublicReview } from "@/lib/publicReview";
 import { appendReview, readReviews } from "@/lib/reviews";
 
-export const GET = auth(async function GET(req) {
-  if (!req.auth?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { searchParams } = new URL(req.url);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
   const locationId = searchParams.get("locationId");
   let list = await readReviews();
   if (locationId) {
     list = list.filter((r) => r.locationId === locationId);
   }
   return NextResponse.json({ reviews: list.map(toPublicReview) });
-});
+}
 
-export const POST = auth(async function POST(req) {
-  if (!req.auth?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export async function POST(request: Request) {
   try {
-    const body = (await req.json()) as {
+    const body = (await request.json()) as {
       locationId?: string;
       rating?: number;
       noiseReported?: string;
@@ -43,17 +34,14 @@ export const POST = auth(async function POST(req) {
       noiseReported === "quiet" || noiseReported === "moderate" || noiseReported === "loud"
         ? noiseReported
         : "moderate";
-    const email =
-      typeof req.auth.user.email === "string" ? req.auth.user.email : undefined;
     const review = await appendReview({
       locationId,
       rating,
       noiseReported: noise,
       comment: typeof comment === "string" ? comment.slice(0, 2000) : "",
-      ...(email ? { submittedByEmail: email } : {}),
     });
     return NextResponse.json({ review: toPublicReview(review) });
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-});
+}

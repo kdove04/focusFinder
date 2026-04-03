@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 :root {
   --jsu-navy: #002147;
@@ -22,4 +23,13 @@ body {
   background: linear-gradient(165deg, var(--jsu-cream) 0%, #e8e4d8 45%, #dfe8f0 100%);
   color: var(--jsu-navy);
   min-height: 100vh;
+}
+
+/* Leaflet popups — align with app card styling */
+.leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 28px rgba(0, 33, 71, 0.12);
+}
+.leaflet-popup-content {
+  margin: 0.65rem 0.85rem;
 }

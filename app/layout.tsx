@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-import { auth } from "@/auth";
-import { AppSessionProvider } from "@/components/AppSessionProvider";
 import { Header } from "@/components/Header";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -17,26 +16,17 @@ export const metadata: Metadata = {
     "Discover the best on-campus study spots with live busyness and noise cues plus student feedback.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-
   return (
     <html lang="en">
       <body className={`${dmSans.variable} font-sans antialiased`}>
-        <AppSessionProvider session={session}>
-          <Header />
-          <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6">{children}</main>
-          <footer className="border-t border-jsu-navy/10 bg-white/60 py-8 text-center text-sm text-muted">
-            <p>
-              Built for JSU students. Live metrics are simulated for demo; plug in campus sensors or
-              reservations data when available.
-            </p>
-          </footer>
-        </AppSessionProvider>
+        <Header />
+        <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6">{children}</main>
+        <SiteFooter />
       </body>
     </html>
   );

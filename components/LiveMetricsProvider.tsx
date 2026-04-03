@@ -25,10 +25,7 @@ export function LiveMetricsProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/locations/status", {
-        cache: "no-store",
-        credentials: "same-origin",
-      });
+      const res = await fetch("/api/locations/status", { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to load live status");
       const data = (await res.json()) as { metrics: LiveMetric[] };
       const next: Record<string, LiveMetric> = {};
