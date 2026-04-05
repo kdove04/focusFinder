@@ -31,6 +31,8 @@ export default function LocationsPage() {
   const [locations, setLocations] = useState<StudyLocation[]>([]);
   const [locationsLoading, setLocationsLoading] = useState(true);
   const [filterPrefs, setFilterPrefs] = useState<LocationFilterPrefs>(DEFAULT_LOCATION_FILTER_PREFS);
+  /** When false, skip persisting so we never overwrite localStorage before the read effect applies. */
+  const [filterPrefsHydrated, setFilterPrefsHydrated] = useState(false);
 
   useEffect(() => {
     const stored = parseStoredLocationFilterPrefs(
@@ -39,15 +41,17 @@ export default function LocationsPage() {
         : null,
     );
     if (stored) setFilterPrefs(stored);
+    setFilterPrefsHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!filterPrefsHydrated) return;
     try {
       localStorage.setItem(LOCATION_FILTER_PREFS_STORAGE_KEY, JSON.stringify(filterPrefs));
     } catch {
       /* ignore quota / private mode */
     }
-  }, [filterPrefs]);
+  }, [filterPrefs, filterPrefsHydrated]);
 
   const loadLocations = useCallback(async () => {
     setLocationsLoading(true);
