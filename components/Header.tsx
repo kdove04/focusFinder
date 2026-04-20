@@ -1,18 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { jsuLogo } from "@/lib/brandAssets";
+import { SignOutButton } from "@/components/SignOutButton";
+import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 
 const nav = [
+  { href: "/home", label: "Home" },
   { href: "/locations", label: "Study spots" },
   { href: "/noise", label: "Noise check" },
   { href: "/contribute", label: "Share feedback" },
 ];
 
-export function Header() {
+export async function Header() {
+  const jar = await cookies();
+  const token = jar.get(SESSION_COOKIE_NAME)?.value;
+  const session = token ? await verifySessionToken(token) : null;
+
   return (
     <header className="border-b border-jsu-navy/10 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link href="/" className="group flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+        <Link
+          href={session ? "/home" : "/"}
+          className="group flex min-w-0 flex-1 items-center gap-3 sm:gap-4"
+        >
           <Image
             src={jsuLogo.src}
             alt={jsuLogo.alt}
@@ -27,17 +38,29 @@ export function Header() {
             <span className="text-xs text-muted">Study spaces on campus</span>
           </div>
         </Link>
-        <nav className="flex flex-wrap gap-1 sm:gap-2" aria-label="Main">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-jsu-navy/80 transition hover:bg-jsu-cream hover:text-jsu-navy"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {session ? (
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+            <span className="hidden max-w-[180px] truncate text-xs text-muted sm:block" title={session.email}>
+              {session.email}
+            </span>
+            <nav className="flex flex-wrap gap-1 sm:gap-2" aria-label="Main">
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-jsu-navy/80 transition hover:bg-jsu-cream hover:text-jsu-navy"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <SignOutButton />
+          </div>
+        ) : (
+          <p className="text-sm text-muted">
+            <span className="hidden sm:inline">Sign in below to use the app.</span>
+          </p>
+        )}
       </div>
     </header>
   );
