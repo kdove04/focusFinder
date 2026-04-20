@@ -5,9 +5,10 @@
  */
 
 export const jsuLogo = {
-  src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Jackson_State_University_logo.png/400px-Jackson_State_University_logo.png",
-  width: 400,
-  height: 125,
+  // Use a bundled copy to avoid intermittent Wikimedia thumbnail rate limiting.
+  src: "/brand/jackson-state-logo.png",
+  width: 1714,
+  height: 534,
   alt: "Jackson State University wordmark",
   commonsUrl:
     "https://commons.wikimedia.org/wiki/File:Jackson_State_University_logo.png",
