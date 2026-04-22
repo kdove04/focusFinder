@@ -31,14 +31,26 @@ export function AuthLanding() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "same-origin",
       });
-      const data = (await res.json()) as { error?: string };
+      const text = await res.text();
+      let data: { error?: string } = {};
+      if (text) {
+        try {
+          data = JSON.parse(text) as { error?: string };
+        } catch {
+          setError(`Something went wrong (HTTP ${res.status}).`);
+          return;
+        }
+      }
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
         return;
       }
       router.push(nextPath);
       router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Request failed. Check your connection and try again.");
     } finally {
       setLoading(false);
     }

@@ -37,7 +37,31 @@ export async function POST(request: Request) {
     const res = NextResponse.json({ ok: true, user: { id: user.id, email: user.email } });
     setSessionCookie(res, token);
     return res;
-  } catch {
-    return NextResponse.json({ error: "Could not create account." }, { status: 500 });
+  } catch (e) {
+    console.error("[api/auth/register]", e);
+    const m = e instanceof Error ? e.message : "";
+    if (
+      m.includes("SUPABASE") ||
+      m.includes("service_role") ||
+      m.includes("NEXT_PUBLIC_SUPABASE")
+    ) {
+      return NextResponse.json({ error: m }, { status: 500 });
+    }
+    if (
+      m.includes("app_users") &&
+      (m.includes("does not exist") || m.toLowerCase().includes("schema cache"))
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Database tables are missing. In Supabase, open the SQL editor and run the file supabase/migrations/20260120120000_init.sql from this repo.",
+        },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json(
+      { error: process.env.NODE_ENV === "development" && m ? m : "Could not create account." },
+      { status: 500 },
+    );
   }
 }
