@@ -7,10 +7,10 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 
 const nav = [
   { href: "/home", label: "Home" },
-  { href: "/user", label: "You" },
-  { href: "/locations", label: "Study spots" },
-  { href: "/noise", label: "Noise check" },
-  { href: "/contribute", label: "Share feedback" },
+  { href: "/user", label: "Profile" },
+  { href: "/locations", label: "Spots" },
+  { href: "/noise", label: "Noise" },
+  { href: "/contribute", label: "Feedback" },
 ];
 
 export async function Header() {
@@ -40,16 +40,13 @@ export async function Header() {
           </div>
         </Link>
         {session ? (
-          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
-            <span className="hidden max-w-[180px] truncate text-xs text-muted sm:block" title={session.email}>
-              {session.email}
-            </span>
-            <nav className="flex flex-wrap gap-1 sm:gap-2" aria-label="Main">
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-2.5">
+            <nav className="flex flex-wrap items-center gap-1.5 sm:gap-2" aria-label="Main">
               {nav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-jsu-navy/80 transition hover:bg-jsu-cream hover:text-jsu-navy"
+                  className="rounded-md border border-transparent px-2.5 py-1.5 text-sm font-medium text-jsu-navy/80 transition hover:border-jsu-navy/10 hover:bg-jsu-cream hover:text-jsu-navy"
                 >
                   {item.label}
                 </Link>
