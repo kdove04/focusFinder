@@ -31,6 +31,9 @@ The app uses the **service role** key only in server code (`lib/supabase/server.
 
 That creates `app_users`, `reviews`, and `custom_locations` with RLS enabled (access from this app is via the service role in server code).
 
+For the **You** profile page (saved study preferences), also run
+[`supabase/migrations/20260122100000_user_preferences.sql`](supabase/migrations/20260122100000_user_preferences.sql), which creates `user_study_preferences` (one row per user after first save).
+
 ## Run locally
 
 ```bash
@@ -55,6 +58,8 @@ Open [http://localhost:3000](http://localhost:3000). Restart the dev server afte
 | `app/api/locations` | GET merged list; POST adds a spot (stored in Supabase `custom_locations`) |
 | `app/api/reviews` | GET/POST reviews (Supabase `reviews`) |
 | `app/api/auth/*` | Register, login, session, logout |
+| `app/user` | Sign-in only: study preferences, your reviews, recommended spots |
+| `app/api/user/preferences` | GET/PUT saved preferences (server session) |
 | `lib/locations.ts` | Default study spots (named from the [JSU campus map / directory](https://www.jsums.edu/campusmap)), merged in code with `custom_locations` from Supabase |
 
 ## Production notes

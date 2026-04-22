@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getAppSession } from "@/lib/appSession";
 import { toPublicReview } from "@/lib/publicReview";
 import { appendReview, readReviews } from "@/lib/reviews";
 
@@ -34,11 +35,13 @@ export async function POST(request: Request) {
       noiseReported === "quiet" || noiseReported === "moderate" || noiseReported === "loud"
         ? noiseReported
         : "moderate";
+    const session = await getAppSession();
     const review = await appendReview({
       locationId,
       rating,
       noiseReported: noise,
       comment: typeof comment === "string" ? comment.slice(0, 2000) : "",
+      submittedByEmail: session?.email,
     });
     return NextResponse.json({ review: toPublicReview(review) });
   } catch {

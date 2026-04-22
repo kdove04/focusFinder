@@ -51,6 +51,20 @@ export async function readReviews(): Promise<Review[]> {
   return (data as ReviewRow[]).map(rowToReview);
 }
 
+export async function readReviewsBySubmitterEmail(email: string): Promise<Review[]> {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return [];
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("id, location_id, rating, noise_reported, comment, created_at, submitted_by_email")
+    .eq("submitted_by_email", normalized)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  if (!data?.length) return [];
+  return (data as ReviewRow[]).map(rowToReview);
+}
+
 export async function appendReview(
   review: Omit<Review, "id" | "createdAt">,
 ): Promise<Review> {
@@ -66,7 +80,9 @@ export async function appendReview(
       noise_reported: review.noiseReported,
       comment: review.comment,
       created_at: createdAt,
-      submitted_by_email: review.submittedByEmail ?? null,
+      submitted_by_email: review.submittedByEmail
+        ? review.submittedByEmail.trim().toLowerCase()
+        : null,
     })
     .select("id, location_id, rating, noise_reported, comment, created_at, submitted_by_email")
     .single();

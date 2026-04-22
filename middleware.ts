@@ -10,7 +10,7 @@ async function getSession(request: NextRequest) {
 }
 
 function isProtectedPath(pathname: string): boolean {
-  const protectedPrefixes = ["/home", "/locations", "/noise", "/contribute"];
+  const protectedPrefixes = ["/home", "/user", "/locations", "/noise", "/contribute"];
   return protectedPrefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
@@ -20,6 +20,7 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/user") ||
     pathname === "/api/health" ||
     pathname.includes(".") // static files like favicon.ico
   ) {

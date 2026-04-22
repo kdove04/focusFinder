@@ -7,6 +7,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session";
 
 const nav = [
   { href: "/home", label: "Home" },
+  { href: "/user", label: "You" },
   { href: "/locations", label: "Study spots" },
   { href: "/noise", label: "Noise check" },
   { href: "/contribute", label: "Share feedback" },
