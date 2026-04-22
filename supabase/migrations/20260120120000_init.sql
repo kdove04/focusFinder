@@ -8,6 +8,25 @@ create table if not exists public.app_users (
   created_at timestamptz not null default now()
 );
 
+-- If an older "reviews" table exists without location_id, IF NOT EXISTS would skip
+-- CREATE TABLE and the index below would fail. Drop a mismatched table (data loss for that table only).
+do $migration$
+begin
+  if to_regclass('public.reviews') is not null then
+    if not exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'reviews'
+        and column_name = 'location_id'
+    ) then
+      raise notice 'Dropping public.reviews: schema does not match Focus Finder; recreating.';
+      drop table public.reviews cascade;
+    end if;
+  end if;
+end
+$migration$;
+
 create table if not exists public.reviews (
   id text primary key,
   location_id text not null,
