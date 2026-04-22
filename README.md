@@ -1,15 +1,35 @@
 # Focus Finder
 
-Focus Finder is a web application for **Jackson State University** students to discover study-friendly spots on campus. It combines **live-style busyness and noise indicators** (demo simulation, ready to swap for real feeds), **on-device microphone analysis** for a focus suitability score, and **student reviews** stored via the API.
+Focus Finder is a web application for **Jackson State University** students to discover study-friendly spots on campus. It combines **live-style busyness and noise indicators** (demo simulation, ready to swap for real feeds), **on-device microphone analysis** for a focus suitability score, and **student reviews** backed by a database.
 
-The default app is **open to everyone** (no sign-in). Add authentication later if you need verified JSU accounts or moderation.
-
-**Imagery:** The header wordmark and home page photos load from [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Jackson_State_University) (`lib/brandAssets.ts`). The site footer credits photographers and licenses. For **official** JSU marks and campaigns, follow [University Communications](https://www.jsums.edu/universitycommunications/) guidance and replace remote URLs with approved files in `public/` if required.
+**Imagery:** The header wordmark and home page photos are sourced from [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Jackson_State_University) and official JSU site assets in `lib/brandAssets.ts` and `public/`. The site footer credits photographers and licenses. For **official** JSU marks, follow [University Communications](https://www.jsums.edu/universitycommunications/) guidance.
 
 ## Stack
 
 - [Next.js](https://nextjs.org/) (App Router) + TypeScript
 - [Tailwind CSS](https://tailwindcss.com/) v4
+- [Supabase](https://supabase.com/) (Postgres) for users, reviews, and custom study locations
+- [jose](https://github.com/panva/jose) + httpOnly cookies for sessions; [bcryptjs](https://github.com/dcodeIO/bcrypt.js) for password hashes
+
+## Environment variables
+
+Create **`.env.local`** in the project root (or set the same in your host, e.g. Render). Do not commit real secrets.
+
+| Variable | Where to get it | Required |
+|----------|------------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API → Project URL | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → **service_role** (secret) | Yes (server only) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Same page → anon public (optional; reserved for client-side Supabase later) | No |
+| `AUTH_SECRET` | Long random string (e.g. `openssl rand -base64 32`) | **Required in production**; dev falls back to a default |
+
+The app uses the **service role** key only in server code (`lib/supabase/server.ts` and API routes) so the Next.js API can read/write your tables. The anon key alone is not sufficient for that pattern.
+
+## Database
+
+1. In Supabase, open **SQL** → **New query**.
+2. Paste and run the contents of [`supabase/migrations/20260120120000_init.sql`](supabase/migrations/20260120120000_init.sql).
+
+That creates `app_users`, `reviews`, and `custom_locations` with RLS enabled (access from this app is via the service role in server code).
 
 ## Run locally
 
@@ -18,7 +38,11 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Restart the dev server after changing `.env.local`.
+
+## Health check
+
+- `GET /api/health` — returns `{ ok: true, supabase: "ok" }` when env is set and Supabase responds. Use for uptime checks (e.g. Render). Returns `503` with a `reason` code if env is missing or the database query fails. No secrets in the response.
 
 ## Project layout
 
@@ -28,14 +52,13 @@ Open [http://localhost:3000](http://localhost:3000).
 | `app/locations/[id]` | Detail, reviews, submit feedback |
 | `app/noise` | Browser-based noise / stability analysis |
 | `app/contribute` | Global feedback form |
-| `app/api/locations` | GET merged list; POST adds a spot → `data/custom-locations.json` |
-| `app/api/locations/status` | JSON metrics (replace with campus data) |
-| `app/api/reviews` | GET/POST reviews → `data/reviews.json` |
-| `data/custom-locations.json` | Student-added study spots (seed `[]`) |
-| `lib/locations.ts` | Default study spots named from the [JSU campus map / directory](https://www.jsums.edu/campusmap) (plus custom JSON) |
+| `app/api/locations` | GET merged list; POST adds a spot (stored in Supabase `custom_locations`) |
+| `app/api/reviews` | GET/POST reviews (Supabase `reviews`) |
+| `app/api/auth/*` | Register, login, session, logout |
+| `lib/locations.ts` | Default study spots (named from the [JSU campus map / directory](https://www.jsums.edu/campusmap)), merged in code with `custom_locations` from Supabase |
 
 ## Production notes
 
-- Persist reviews and custom locations in a database instead of `data/reviews.json` / `data/custom-locations.json` for multi-instance hosting.
-- Replace simulated metrics in `lib/liveMetrics.ts` with Wi‑Fi density, room bookings, or sensor APIs.
-- Optional: add a trained audio classifier (e.g. TensorFlow.js) while keeping processing on-device for privacy.
+- Set all required env vars on your host and redeploy after changes.
+- Replace simulated metrics in `lib/liveMetrics.ts` with Wi‑Fi density, room bookings, or sensor APIs if you have them.
+- Optional: on-device model for noise classification; keep processing local for privacy.

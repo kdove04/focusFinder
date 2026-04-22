@@ -20,6 +20,7 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") ||
+    pathname === "/api/health" ||
     pathname.includes(".") // static files like favicon.ico
   ) {
     return NextResponse.next();
