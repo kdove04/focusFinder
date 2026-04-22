@@ -16,7 +16,7 @@ export type StudyLocation = {
 /**
  * Study spots aligned with the official JSU campus map / directory
  * (see https://www.jsums.edu/campusmap and https://www.jsums.edu/jsu-campus-directory).
- * Merged with user-added entries from `data/custom-locations.json`.
+ * Merged with user-added entries in Supabase (`custom_locations`).
  */
 export const studyLocations: StudyLocation[] = [
   {

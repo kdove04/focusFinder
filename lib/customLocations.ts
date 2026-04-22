@@ -1,41 +1,58 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { createServiceRoleClient } from "./supabase/server";
 import type { StudyLocation } from "./locations";
 
-const customPath = path.join(process.cwd(), "data", "custom-locations.json");
+type CustomLocationRow = {
+  id: string;
+  name: string;
+  building: string;
+  floor: string;
+  description: string;
+  amenities: string[] | null;
+  typical_capacity: number;
+  baseline_noise: number;
+  baseline_busyness: number;
+};
 
-function isStudyLocation(x: unknown): x is StudyLocation {
-  if (!x || typeof x !== "object") return false;
-  const o = x as Record<string, unknown>;
-  return (
-    typeof o.id === "string" &&
-    typeof o.name === "string" &&
-    typeof o.building === "string" &&
-    typeof o.floor === "string" &&
-    typeof o.description === "string" &&
-    Array.isArray(o.amenities) &&
-    o.amenities.every((a) => typeof a === "string") &&
-    typeof o.typicalCapacity === "number" &&
-    typeof o.baselineNoise === "number" &&
-    typeof o.baselineBusyness === "number"
-  );
+function rowToLocation(r: CustomLocationRow): StudyLocation {
+  return {
+    id: r.id,
+    name: r.name,
+    building: r.building,
+    floor: r.floor,
+    description: r.description,
+    amenities: Array.isArray(r.amenities) ? r.amenities : [],
+    typicalCapacity: r.typical_capacity,
+    baselineNoise: r.baseline_noise,
+    baselineBusyness: r.baseline_busyness,
+  };
 }
 
 export async function readCustomLocations(): Promise<StudyLocation[]> {
-  try {
-    const raw = await fs.readFile(customPath, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(isStudyLocation);
-  } catch {
-    return [];
-  }
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("custom_locations")
+    .select(
+      "id, name, building, floor, description, amenities, typical_capacity, baseline_noise, baseline_busyness",
+    );
+  if (error) throw error;
+  if (!data?.length) return [];
+  return (data as CustomLocationRow[]).map(rowToLocation);
 }
 
 export async function appendCustomLocation(loc: StudyLocation): Promise<void> {
-  const list = await readCustomLocations();
-  list.push(loc);
-  await fs.writeFile(customPath, JSON.stringify(list, null, 2), "utf-8");
+  const supabase = createServiceRoleClient();
+  const { error } = await supabase.from("custom_locations").insert({
+    id: loc.id,
+    name: loc.name,
+    building: loc.building,
+    floor: loc.floor,
+    description: loc.description,
+    amenities: loc.amenities,
+    typical_capacity: loc.typicalCapacity,
+    baseline_noise: loc.baselineNoise,
+    baseline_busyness: loc.baselineBusyness,
+  });
+  if (error) throw error;
 }
 
 export function newCustomLocationId(): string {
