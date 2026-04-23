@@ -1,6 +1,6 @@
 # Focus Finder
 
-Focus Finder is a web application for **Jackson State University** students to discover study-friendly spots on campus. It combines **live-style busyness and noise indicators** (demo simulation, ready to swap for real feeds), **on-device microphone analysis** for a focus suitability score, and **student reviews** backed by a database.
+Focus Finder is a web application for **Jackson State University** students to discover study-friendly spots on campus. It combines **live-style busyness and noise indicators** (demo simulation, ready to swap for real feeds), **on-device microphone analysis** for a focus suitability score, and **student reviews** backed by Supabase.
 
 **Imagery:** The header wordmark and home page photos are sourced from [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Jackson_State_University) and official JSU site assets in `lib/brandAssets.ts` and `public/`. The site footer credits photographers and licenses. For **official** JSU marks, follow [University Communications](https://www.jsums.edu/universitycommunications/) guidance.
 
@@ -27,12 +27,11 @@ The app uses the **service role** key only in server code (`lib/supabase/server.
 ## Database
 
 1. In Supabase, open **SQL** → **New query**.
-2. Paste and run the contents of [`supabase/migrations/20260120120000_init.sql`](supabase/migrations/20260120120000_init.sql).
+2. Paste and run the contents of:
+   - [`supabase/migrations/20260120120000_init.sql`](supabase/migrations/20260120120000_init.sql)
+   - [`supabase/migrations/20260122100000_user_preferences.sql`](supabase/migrations/20260122100000_user_preferences.sql)
 
-That creates `app_users`, `reviews`, and `custom_locations` with RLS enabled (access from this app is via the service role in server code).
-
-For the **You** profile page (saved study preferences), also run
-[`supabase/migrations/20260122100000_user_preferences.sql`](supabase/migrations/20260122100000_user_preferences.sql), which creates `user_study_preferences` (one row per user after first save).
+These create `app_users`, `reviews`, `custom_locations`, and `user_study_preferences` with RLS enabled (access from this app is via the service role in server code).
 
 ## Run locally
 
@@ -47,6 +46,15 @@ Open [http://localhost:3000](http://localhost:3000). Restart the dev server afte
 
 - `GET /api/health` — returns `{ ok: true, supabase: "ok" }` when env is set and Supabase responds. Use for uptime checks (e.g. Render). Returns `503` with a `reason` code if env is missing or the database query fails. No secrets in the response.
 
+## Authentication + profile
+
+- Users can create accounts and sign in from the landing page.
+- Signed-in users get a **Profile** tab (`/user`) with:
+  - saved study preferences,
+  - previously submitted reviews,
+  - recommended spots based on preferences.
+- Review attribution is tied to the session email at submit time; older anonymous reviews are not attached to a profile.
+
 ## Project layout
 
 | Area | Purpose |
@@ -58,7 +66,7 @@ Open [http://localhost:3000](http://localhost:3000). Restart the dev server afte
 | `app/api/locations` | GET merged list; POST adds a spot (stored in Supabase `custom_locations`) |
 | `app/api/reviews` | GET/POST reviews (Supabase `reviews`) |
 | `app/api/auth/*` | Register, login, session, logout |
-| `app/user` | Sign-in only: study preferences, your reviews, recommended spots |
+| `app/user` | Sign-in only Profile page: preferences, your reviews, recommended spots |
 | `app/api/user/preferences` | GET/PUT saved preferences (server session) |
 | `lib/locations.ts` | Default study spots (named from the [JSU campus map / directory](https://www.jsums.edu/campusmap)), merged in code with `custom_locations` from Supabase |
 
